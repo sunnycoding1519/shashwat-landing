@@ -1,0 +1,188 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: linear-gradient(
+    180deg,
+    #eef6f1 0%,
+    #f7fbf8 40%,
+    #eef3ec 100%
+  );
+  color: #2c2c2c;
+}
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 80px 20px;
+}
+
+/* ================= HERO ================= */
+.hero {
+  text-align: center;
+  padding: 90px 20px 70px;
+}
+
+.logo-center {
+  width: 120px;
+  margin-bottom: 18px;
+}
+
+.hero h1 {
+  font-size: 42px;
+  line-height: 1.3;
+  color: #1f7a4d;
+}
+
+.hero p {
+  max-width: 780px;
+  margin: 18px auto 0;
+  font-size: 17px;
+  color: #555;
+}
+
+/* ================= TITLES ================= */
+.section-title {
+  text-align: center;
+  font-size: 34px;
+  color: #1f7a4d;
+  margin-bottom: 12px;
+}
+
+.section-subtitle {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 45px;
+  font-size: 16.5px;
+  color: #555;
+}
+
+/* ================= CARDS ================= */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 22px;
+}
+
+.card {
+  background: #ffffff;
+  padding: 26px;
+  border-radius: 18px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+  transition: 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* ================= DOCTOR ================= */
+.doctor-section {
+  text-align: center;
+}
+
+.doctor-img-wrap {
+  width: 190px;
+  height: 190px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  padding: 5px;
+  background: linear-gradient(135deg, #6fbf8e, #1f7a4d);
+}
+
+.doctor-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #ccc;
+}
+
+.doctor-name {
+  font-size: 26px;
+  color: #1f7a4d;
+  margin-top: 10px;
+}
+
+.doctor-desc {
+  max-width: 820px;
+  margin: 18px auto 0;
+  font-size: 16px;
+  color: #555;
+  line-height: 1.7;
+}
+
+/* ================= FORM ================= */
+.form-box {
+  background: #ffffff;
+  padding: 40px;
+  max-width: 480px;
+  margin: auto;
+  border-radius: 20px;
+  box-shadow: 0 25px 55px rgba(0,0,0,0.08);
+}
+
+.form-box input,
+.form-box select {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+/* ================= BUTTON ================= */
+.btn {
+  background: linear-gradient(135deg, #1f7a4d, #6fbf8e);
+  color: white;
+  border: none;
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+/* ================= FLOATING CTA ================= */
+.floating-btn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  background: linear-gradient(135deg, #1f7a4d, #6fbf8e);
+  color: white;
+  padding: 14px 24px;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+  cursor: pointer;
+  z-index: 999;
+}
+
+/* ================= FOOTER ================= */
+.footer {
+  background: #1f7a4d;
+  color: white;
+  text-align: center;
+  padding: 22px;
+  font-size: 14px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .doctor-img-wrap {
+    width: 160px;
+    height: 160px;
+  }
+}
