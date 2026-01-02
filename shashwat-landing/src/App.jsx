@@ -23,7 +23,7 @@ export default function App() {
       phone: form.phone.startsWith("91") ? form.phone : "91" + form.phone
     };
 
-    await fetch("http://165.232.160.165:5678/webhook/whatsapp-lead", {
+    await fetch("http://165.232.160.165:5678/webhook-test/whatsapp-lead", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
