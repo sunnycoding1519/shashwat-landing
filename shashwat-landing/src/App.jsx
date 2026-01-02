@@ -15,7 +15,7 @@ export default function App() {
   const submitForm = async (e) => {
     e.preventDefault();
 
-    await fetch("https://YOUR_BACKEND_URL/send-whatsapp", {
+    await fetch("http://165.232.160.165:5678/webhook/whatsapp-lead", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)
