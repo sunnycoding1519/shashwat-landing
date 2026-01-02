@@ -9,22 +9,72 @@ export default function App() {
     problem: ""
   });
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    let { name, value } = e.target;
+
+    // ✅ Only digits allowed in phone
+    if (name === "phone") {
+      value = value.replace(/\D/g, "");
+    }
+
+    setForm({ ...form, [name]: value });
+  };
 
   const submitForm = async (e) => {
     e.preventDefault();
 
-    await fetch("http://165.232.160.165:5678/webhook/whatsapp-lead", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
-    });
+    if (form.phone.length !== 10) {
+      alert("Please enter valid 10 digit WhatsApp number");
+      return;
+    }
 
-    alert("Dhanyavaad! Aapko WhatsApp par message bhej diya gaya hai.");
-    setForm({ name: "", phone: "", problem: "" });
+    setLoading(true);
+
+    // ✅ Auto add 91
+    const payload = {
+      name: form.name,
+      phone: "91" + form.phone,
+      problem: form.problem
+    };
+
+    try {
+      await fetch("http://165.232.160.165:5678/webhook/whatsapp-lead", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      setSubmitted(true);
+      setForm({ name: "", phone: "", problem: "" });
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
+  /* ================= THANK YOU PAGE ================= */
+  if (submitted) {
+    return (
+      <div style={thank.page}>
+        <div style={thank.card}>
+          <h1>✅ Thank You!</h1>
+          <p>
+            Aapka form successfully submit ho gaya hai.
+            <br />
+            WhatsApp par guidance message aa raha hai 📲
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  /* ================= MAIN PAGE ================= */
   return (
     <>
       {/* HERO */}
@@ -41,29 +91,19 @@ export default function App() {
           sirf symptoms nahi hote — ye sharir ke andar ho rahe
           <b> hormonal imbalance ke clear signals</b> hote hain.
         </p>
-
-        <p>
-          <b>Shashwat Chikitsa</b> me hum root-cause par kaam karte hain,
-          taaki healing prakritik, gehri aur long-term ho —
-          bina side effects aur bina lifelong medicines.
-        </p>
       </div>
 
       {/* PROBLEMS */}
       <div className="container">
         <h2 className="section-title">Hormonal Imbalance ke Common Signs</h2>
-        <p className="section-subtitle">
-          Agar aap in lakshanon ko regular experience kar rahe hain,
-          toh ye hormonal imbalance ka sanket ho sakta hai.
-        </p>
 
         <div className="cards">
-          <div className="card">PCOD / PCOS – irregular periods, pain</div>
+          <div className="card">PCOD / PCOS – irregular periods</div>
           <div className="card">Thyroid – weight gain, hair fall</div>
-          <div className="card">Constant fatigue & low energy</div>
-          <div className="card">Hair fall, acne & skin issues</div>
-          <div className="card">Mood swings, anxiety, irritation</div>
-          <div className="card">Weak digestion & low immunity</div>
+          <div className="card">Fatigue & low energy</div>
+          <div className="card">Hair fall & acne</div>
+          <div className="card">Mood swings & anxiety</div>
+          <div className="card">Weak digestion</div>
         </div>
       </div>
 
@@ -71,24 +111,17 @@ export default function App() {
       <div className="container doctor-section">
         <h2 className="section-title">Guided by Vedic Wisdom</h2>
 
-        <div className="doctor-img-wrap">
-          <img
-            src={doctorImg}
-            className="doctor-img"
-            alt="Dr. Swami Bhakti Prasad Ji"
-          />
-        </div>
+        <img
+          src={doctorImg}
+          className="doctor-img"
+          alt="Dr. Swami Bhakti Prasad Ji"
+        />
 
         <h3 className="doctor-name">Dr. Swami Bhakti Prasad Ji</h3>
 
         <p className="doctor-desc">
-          Dr. Swami Bhakti Prasad Ji ek anubhavi vaidik healer hain,
-          jinhone apna jeevan sharir, mann aur urja ke santulan ko
-          samajhne aur sikhane me samarpit kiya hai.
-          <br /><br />
-          Unke guidance me hormonal imbalance jaise complex issues ko
-          bhi natural lifestyle correction, diet aur vaidik principles
-          ke madhyam se address kiya jata hai — bina harmful medicines.
+          Vedic healing ke madhyam se hormonal imbalance ka
+          natural aur root-level solution.
         </p>
       </div>
 
@@ -97,36 +130,43 @@ export default function App() {
         <h2 className="section-title">
           Free Hormonal Guidance ke liye Form Bharein
         </h2>
-        <p className="section-subtitle">
-          Form submit karte hi aapko WhatsApp par confirmation message milega.
-        </p>
 
         <form className="form-box" onSubmit={submitForm}>
-          <input name="name" placeholder="Aapka Naam" required onChange={handleChange} />
-          <input name="phone" placeholder="WhatsApp Number (91XXXXXXXXXX)" required onChange={handleChange} />
-          <select name="problem" required onChange={handleChange}>
+          <input
+            name="name"
+            placeholder="Aapka Naam"
+            value={form.name}
+            required
+            onChange={handleChange}
+          />
+
+          <input
+            name="phone"
+            placeholder="WhatsApp Number (10 digit)"
+            value={form.phone}
+            maxLength="10"
+            required
+            onChange={handleChange}
+          />
+
+          <select
+            name="problem"
+            value={form.problem}
+            required
+            onChange={handleChange}
+          >
             <option value="">Apni Problem Select karein</option>
-            <option>PCOD / PCOS</option>
-            <option>Thyroid</option>
-            <option>Weight Gain</option>
-            <option>Hair Fall</option>
-            <option>Other</option>
+            <option value="PCOD / PCOS">PCOD / PCOS</option>
+            <option value="Thyroid">Thyroid</option>
+            <option value="Weight Gain">Weight Gain</option>
+            <option value="Hair Fall">Hair Fall</option>
+            <option value="Other">Other</option>
           </select>
 
-          <button className="btn">
-            Submit & Get WhatsApp Guidance
+          <button className="btn" disabled={loading}>
+            {loading ? "Submitting..." : "Submit & Get WhatsApp Guidance"}
           </button>
         </form>
-      </div>
-
-      {/* FLOATING CTA */}
-      <div
-        className="floating-btn"
-        onClick={() =>
-          document.querySelector(".form-box").scrollIntoView({ behavior: "smooth" })
-        }
-      >
-        Join Now 🌿
       </div>
 
       {/* FOOTER */}
@@ -136,3 +176,21 @@ export default function App() {
     </>
   );
 }
+
+/* ================= THANK YOU STYLES ================= */
+const thank = {
+  page: {
+    height: "100vh",
+    background: "#e8f5e9",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  card: {
+    background: "#fff",
+    padding: "40px",
+    borderRadius: "14px",
+    textAlign: "center",
+    boxShadow: "0 15px 40px rgba(0,0,0,0.15)"
+  }
+};
