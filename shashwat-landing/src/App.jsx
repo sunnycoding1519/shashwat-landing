@@ -10,27 +10,49 @@ export default function App() {
   });
 
   const [showThankYou, setShowThankYou] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const submitForm = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    // ✅ AUTO ADD 91 (agar user ne nahi likha)
-    const payload = {
-      ...form,
-      phone: form.phone.startsWith("91") ? form.phone : "91" + form.phone
-    };
+    try {
+      // ✅ phone clean + auto 91
+      let phone = form.phone.replace(/\D/g, "");
+      if (!phone.startsWith("91")) phone = "91" + phone;
 
-    await fetch("https://n8n.shashwathealing.org/webhook/ca7d7009-372a-4589-9244-c45e836304d4", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+      const payload = {
+        name: form.name.trim(),
+        phone,
+        problem: form.problem
+      };
 
-    setForm({ name: "", phone: "", problem: "" });
-    setShowThankYou(true); // ✅ redirect to thank you
+      const response = await fetch(
+        "https://n8n.shashwathealing.org/webhook/ca7d7009-372a-4589-9244-c45e836304d4",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Webhook error");
+      }
+
+      setForm({ name: "", phone: "", problem: "" });
+      setShowThankYou(true);
+    } catch (error) {
+      alert("❌ Kuch problem aa gayi. Thoda baad try karein.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   /* ================= THANK YOU PAGE ================= */
@@ -130,6 +152,7 @@ export default function App() {
             name="name"
             placeholder="Aapka Naam"
             required
+            value={form.name}
             onChange={handleChange}
           />
 
@@ -137,10 +160,16 @@ export default function App() {
             name="phone"
             placeholder="WhatsApp Number (10 digit)"
             required
+            value={form.phone}
             onChange={handleChange}
           />
 
-          <select name="problem" required onChange={handleChange}>
+          <select
+            name="problem"
+            required
+            value={form.problem}
+            onChange={handleChange}
+          >
             <option value="">Apni Problem Select karein</option>
             <option>PCOD / PCOS</option>
             <option>Thyroid</option>
@@ -149,8 +178,8 @@ export default function App() {
             <option>Other</option>
           </select>
 
-          <button className="btn">
-            Submit & Get WhatsApp Guidance
+          <button className="btn" disabled={loading}>
+            {loading ? "Submitting..." : "Submit & Get WhatsApp Guidance"}
           </button>
         </form>
       </div>
@@ -175,7 +204,7 @@ export default function App() {
   );
 }
 
-/* ===== THANK YOU PAGE CSS (INLINE, MINIMAL) ===== */
+/* ===== THANK YOU PAGE CSS (INLINE) ===== */
 const thank = {
   page: {
     height: "100vh",
